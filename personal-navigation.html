@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>个人导航站</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            color: white;
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .search-box {
+            position: relative;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 15px 50px 15px 20px;
+            border: none;
+            border-radius: 25px;
+            font-size: 16px;
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .search-input:focus {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 35px rgba(0,0,0,0.2);
+        }
+
+        .search-btn {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            font-size: 18px;
+            color: #666;
+            cursor: pointer;
+        }
+
+        .categories {
+            display: grid;
+            gap: 30px;
+        }
+
+        .category {
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .category:hover {
+            transform: translateY(-5px);
+        }
+
+        .category-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #4a5568;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 10px;
+        }
+
+        .links-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .link-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            background: #f8fafc;
+            border-radius: 10px;
+            text-decoration: none;
+            color: #2d3748;
+            transition: all 0.3s ease;
+            border: 1px solid #e2e8f0;
+        }
+
+        .link-item:hover {
+            background: #667eea;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .link-icon {
+            width: 16px;
+            height: 16px;
+            margin-right: 10px;
+            border-radius: 3px;
+            flex-shrink: 0;
+        }
+
+        .link-text {
+            font-size: 14px;
+            font-weight: 500;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 40px;
+            color: #718096;
+            font-size: 16px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .links-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .category {
+                padding: 20px;
+            }
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            color: rgba(255,255,255,0.8);
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🌟 个人导航站</h1>
+            <div class="search-box">
+                <input type="text" class="search-input" placeholder="搜索网站..." id="searchInput">
+                <button class="search-btn" onclick="clearSearch()">🔍</button>
+            </div>
+        </div>
+
+        <div class="categories" id="categories">
+            <div class="category">
+                <h2 class="category-title">🔍 搜索工具</h2>
+                <div class="links-grid">
+                    <a href="https://www.google.com" class="link-item" target="_blank">
+                        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAACIklEQVQ4jYWSS0iUURTHf/fe8RvHooE2VlT2FNqUGWmNEYUR9lhEEVJhUIsoXOQuap1Rq6KHNQt3LaPAIOxhlNTChUwLMU3NR1CklUzg6xvPd1ro2KhTHjjcA/e8/uf/hzmmqsUiEheRLhHxp/2TiDxQ1aK5+ZmFeSJSrwuYiMRVNZKuMxnFz51zu9T3GX/6iPGmRqS/F5WAUMEawuUVRI5UYjwPEWl2zlUYY8YMgIjUW2vPBkPfSV6uYbKvJ+uW3rZSojfuABAEQdw5d96oajHQqr7P8IUqpL8X43lEjp3EK4mBtfgt75l4+4po7U3cytWZPbcyjUlTidv642ipDu7foX7bh2zgs92jDhHpUlWdbNmuEw15OvqweqE7ZjboCAEFADrSjs1LkRM7NAt3+bWRebfYudFx9XguwFqbwePs9z/mT/6NLdAHMBpex28W0/C1Y1Zy05VFM75nUwiAZVGT/v5sgdcA3UurOPUrxvXOFhJD7fOmdn4LeNc5NbpkfWimv5mWZ8KXFKdfXqInOYBnc6gsPEjZ8mKssbQOtvEkMczYl0oK8z3un4lgppbYkhZS3Fp7bnD0Jxeba+lODmTFviFcxq29NeRHDUEQ1DnnqtNSjohIo3Nutx+keNz9gmf9zfQkB0ChYMkK9q2KcaLwMJFQGFV9Y4w5YIwZzyBBI2lRLcD9PVXN/SdFqlokInUi0iEiE9P+UUTuqurmufl/AKTzsFGmvUNUAAAAAElFTkSuQmCC" class="link-icon" alt="">
+                        <span class="link-text">Google</span>
+                    </a>
+                    <a href="https://www.bing.com" class="link-item" target="_blank">
+                        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAABrklEQVQ4jc2Sv0tbURTHv+fea9575of1L3DoJGLb2ckfi/EHuGQUArUZCi/QTu0grbTibKBLClooOOhQcIiDJNEO4tAllAwOBqSLOoh5fSaa5N3TIUlNQkg7dOh3O5fz/dzvORzg3+utAJjua6b629/p3hjdNGGnjHZQL0ND/tj+qOxX70jr+XqH+lIruys3ydnvPQBMALHv+eGwZchj6JrBrJMA1wTJZ0xKl6uVscqHyXyztwlom82U1TUSsoJyacRJTMadxNRL/uk+JiHIlLzWLXQDQIzYtz6SvrC+cz8XkzOniOR9CKeM4sZcQVduPhGpaYRTBgDuAgDw41KAmQAoAIB7RggM1ZsZHgCBgNtmbs1DADgUT+8KZY3z9dWT4sZcAQAG7PRD8vV/1dVSxklMLXbuQDWWCIBw69FrS/ARBQO5UDz9UbDoY/BTMgcsuiudAwAiOwI78DoT/JZ/ae+R8ltvwN4CIASDt6D5QvofvPBunWVnfeJ9p6dFLcdipwxEs2azDMUPlgdf5ThoZ1a7fdyiLqcc2ZYAELQzqyE7c4LxrOoB+EO6Buz/0S85h5rvF5Z4ogAAAABJRU5ErkJggg==" class="link-icon" alt="">
+                        <span class="link-text">必应</span>
+                    </a>
+                    <a href="https://translate.google.com/" class="link-item" target="_blank">
+                        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAC1klEQVQ4jX2Sv2+VVRyHn+855/1xf1RuQEM1lJouKh002E4dxCopGksEvYOLTi4MKv8CYZb4B+hkHNQ4YNEIIUbDIJiIGqmQNjavmLQXe0t7e+l93/ec83VgI8Bnf/J5hkcA2qf7szZrjlbFQFWRGNGk3pDgd3748t36DVABUe4x1z7dnxWXXVABkzVAQULA5lD0woeqeuLzRZL2AQ13wyISnBfZl9qEajgoRcQCoMRykBqEeRF5Hyjv9Q7gVKkiqIjYwosZlioqYjJbiKqZ+Ohs55tj066/4wVQVDUmSWLKsuzUarWTThURkGEF+3cHefWZgAjy1RXLH12rqzsPHbGuotUcIQR/Ry9GWq0W3W73krNAFWB3Qzn+vOf764b+0OjtCgH49R/1vy+tMjFWkKY5ZVUBBFW1qpoYa2G7gKnxSGfd+ORHx2OtKK8/G3hyr5fuIHPX16xbWvnLLVz8yd0uStvb2nYxRmuMqgkBUgsr68L4HuWpRyOdHkw/HlFVxDi+u+b5+dqf3Ozd4uMz5+Xc5V+IqiLRiakC5Alc/ddwftHy3oueucnIp5csS2uG3FYU6X7y2h4OT0+yq1FnfmaKxFrKEHBBUa9onigLvzm9uGzECqxvQ5aAauBWmbPSy7nyxQLHZg+RWsOwLLEWDIIQiVHF11MNg0L81lB8nuJV8YDGAKvFXh175GH+Xr1JUVWoRsqyxBC8tynWZvVM0rrL6nWX1urOZA1ns4bDJYgTNmSfzM0cIrFweXGZzDlCCLiS9W/jpvnAJumY91WUqAYDRDCxaoXNjcMxRv4rRJefGMoLU5O6MSgpKq9JkqjcL9E7RWPm3jjT2eoz+tJzeXzt5VGT5RnGSBgZGUkHg8HbDqDdVns3fJVFK58dqF5569zXbx4Ze2d+1lljUkCw1tjhsMB7f+NBBgLoqVNnx48enZjxvlQREWOMNptN6fU21w4efPrC/3kYZVYu7xKZAAAAAElFTkSuQmCC" class="link-icon" alt="">
+                        <span class="link-text">谷歌翻译</span>
+                    </a>
+                    <a href="https://zh.wikipedia.org" class="link-item" target="_blank">
+                        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAIAAACQkWg2AAAB/klEQVQ4jU2SPWtUYRCFz5n3bvbubhISoyJiJxEsEkglghZJZUTUJkhAUoja2WihgohFQPAXaGVhk8rGRkQrURDEFOL3B2idkDXJ7t3Nve8ci7ubZOozZ2aeMyzmptAvSSBpBgkxgkQIkOQOkgCAZLeaJEi1NkBDWgeEzXUkFVZTuIPcaSjVkqPb5bEZTp/H4aPMc//0Hs+X9Psb0hrlILm9kuRw5+XbNjsPuX//yNEx239Inbbfu6IvH5jWISU9fzNlmV26FWbn/d0rf7SI5oosaPosF25gZC9iLH1ZzE0JRLeN8YnwYEl/fsSb8+xkTOvyiK0O9h3ERhMSAZAGgKTy3E6eppmePcHmOhtDgmjG2iDXVtjnAcAAyCNrDYxPSNLXZVZTxYIlZTmSBKSkciUrb0BSwfAe5DnW11DmUE7u6bhN3/opRHTbSALSGgSaARDAEOCuYmu72QAwJGq39OszLXDqhP6tKjrc6VEbTdUaHDugIufODRAt6OVTxcIWrtuZi6imCokGUkwet7sPbfExBqpy72Etc0C7xVMX7OodVCroZGquojHIoRECvvzG71+DnLRdSQPIWhiftJlzODLJ4VF1Mvz9qeXXevsCRcEQ+hN2Ps/UaaPIUWswJJKjm6EoWB8syZLsPV8PgiLTGlhHjIoFSaR10OQRpSPwH79sFlWOAVADAAAAAElFTkSuQmCC" class="link-icon" alt="">
+                        <span class="link-text">维基百科</span>
+                    </a>
+                </div>
+            </div>
+
+            <div class="category">
+                <h2 class="category-title">📧 邮箱通讯</h2>
+                <div class="links-grid">
+                    <a href="https://mail.google.com" class="link-item" target="_blank">
+                        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAACEUlEQVQ4jcWSP0iVYRTGf+d9v/d6/ZelXBCSIHJIKbHCq1DkkIVubVK0NCSI0ODWdpcagigShDRoawhqygZz0BAxrU2I6ApCDsGnpl3Fe73f956GTDS4jfUsz/L84Twc+N8QgJmGhlqXsB3bxs1fzGbDvxn0Dan4kG3b2oxna7pZMxkwmrAjzpgx54uTn86c7Cxlzt2r74zKgklrZawiCEY0gzHpxkZn4sLpvCpWpLkyWTa2ejk9qBnMXmsGE17oGNSlmrHA0UweAo1bSOOC+ze+yLV3t+LWpXEi9WCk0ok8WJluS3+74m4DrEwXH7sEvd4bfOQxIozvNESvF68SADy/NMRi9hXdM3exPqLgE5SJ6c1HOy0AZdY25b2nAk9OHUNbLbzMHWOzMYspr0Wtxsw2X+dpzzMNq46GSTx57wmMaQqMacp7T9IIXzUZDqyf1xfbJwh2D9wlxUUFluvP8jD9qJ9iftiJoIACTgSJo+E7rcf7F6I6khLvDWv2r+w0ks9VjavVUwsDEdonsCGwEaF91VMfB7L1wWpCVPZ7DgQAlPuCBUhNzI/GQlcsdKUm5kcByiPsn/rgN4sYQFEf7zWk3s59OKD2XnAWRND4l9e0r1FUZM7jQ68+tNYWSj2SGFMg9iHqQ7zOZXvai0EmI/7cE71Z94MjAMtbrJcK2LTy/nAQnwIo5FLfkYwvpf13+AmqpdgP1oFy7QAAAABJRU5ErkJggg==" class="link-icon" alt="">
+                        <span class="link-text">Gmail</span>
+                    </a>
+                    <a href="https://mailh.qiye.163.com" class="link-item" target="_blank">
+                        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAC20lEQVQ4jS2SzYvVZRxHz+f7/H73zp0ZNccRKw1LgzKLNHpBchHR0qml0c6I2vW2aiW6KwjXFUibKDAIF0U7hZBoFkKaaMhQURgmzoxz5/Xe+zzPp4X+BedwOAKYOeHp+TVO5lqPQt2aElaSIiRFEA0GC0QkFpTqmaWNOH7xhG6LGU/vmc7fd3rNCxPNqDQtIgSC1AhFEGFFI0BG0OkRecjsnWVm0s1fjp96dl96bWVpMLy54FhYhrZBKQmsu2QJHEgIoAwZtT12t4nNGhUvNFG3mqhzN6rOX7a/Ole9uG5tmghsORqQiEhBNHJKAGCxpNUN11xBMmOtaFPRtX9U3/2s+sZi1X2TQUWOxooUNE2wPrKaBN1WhDFNgpAYjMzf/xU/tgt9+UHS3h2w2K+ELIqsat9arLz0hDnyDF5erwQg25JMyRXXorVhcP+UdPr9VgceFvN3Kjlbd5bNWy/DJ2+gxb5VazgkGWQJraxmUshtgvUh3jopPn+v5fA+kUeFT99M+vBVYu5m1AvX7F6qau7lQJKXVobavm3MBlJYgyyPtejU2y1X5tb85CMjQcfnLlf6K3hqi4laq8BaXcva2Ch0O6FaDXd30DCbTgvP7e9xe6l6bVA5f8kkWTmbADkiGA6yUwpHCucC9l23CFGKWR9Ie3d14+er9pU/C91kyoh7EcG/zY3c6yUmu9LmntU2YJtRNhFiy7j13YXij05nwrgUU0tFxbn/+1+aeOWdvvc8lHjxQKNDTzU6+Hhi57RoEhqM8Mdfj3z6x8zkhOh0woogkvpNlIUffvp1++u35vMgl9peul78xdkhO6ak/Y82Pvx0YvZa9bmLWdu3BRjnYSmdyW6nlHJG9tUHDh3bffaPf3vPt1p0SFYKZ6NBgVzFeBdt3iSssBrRjo2HyLMDmiMC4MH+9M6D4yedN466DKYIOaVwalFKCAlLTglFpzefuvFtWYvj17/R7f8BH2Z/F1dtmSUAAAAASUVORK5CYII=" class="link-icon" alt="">
+                        <span class="link-text">网易企业邮</span>
+                    </a>
+                </div>
+            </div>
+
+            <div class="category">
+                <h2 class="category-title">💼 工作办公</h2>
+                <div class="links-grid">
+                    <a href="https://www.notion.so" class="link-item" target="_blank">
+                        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAADHElEQVQ4jZ2STWhUZxSG3/Pde+fOzJ2Z5E4yJvUnkphExySgVhMIaSMUI7YpqdKCLVloxYULW2g3LkozuglddNFFu+midFEpYqFg6Y+FQhW0IJbWaAhJFh1Ho9H5ScbMzL1zv+87XdQR69J39Rw454Vzzkt4SucAAwBmAc4AGo9rAArPIWoAP8XPymzAL2NjTq2SHw+kit4r1Rbfm5+/3D04uD/kV5vo75vnGCB64vd/AwLAWaU2tIXFty0BcFXrK10DAxdOWWq6ybTwWX/fMN289SEDmh73NwxEA+bgI+95tR+Xi2rONF+cjtB0d087p18flqdT0fcn0r2/Ue/6Fn5mrnEkcWbfaPS7xezJVbZCxxK2kRjaii0nJ9G5f0REklG9bT7bKR7JgxNNsSsorS69BRizABuNFb4P8PKQxjtvxkKITAxj54m3aV0iRl6hRE53BznpTapjIZdy82uH5txk7nqpNAOADADYmU6fOCrlF6NJx2469hqGDr8qbKnIq1YBEAeVGuwW14jv2SZTueVY6m5+wm9t1XeKxcsCAEZqvt23OWVu+ugIjxzcB+FLDgIFIgOKmWCGEHiKIwnX6P/4uBwcGcDeutcFgImZBRHphT/Pf9rdu/GDytKyBEuhWAjNxn/7+WtgzayVkvGWduvGYvarPWPH32XOCJOINAAzZoZG788u8DdfnifTbaOgXMSO3X1wX2jHxZyFiJtC/VFR7LCuY7VW3w3AAqZk4x3E4LhXKtCDeA+tTH5OoW8Yz8I+WxnMXrCdRCFR4SdH8F" class="link-icon" alt="">
+                        <span class="link-text">Notion</span>
+                    </a>
+                    <a href="https://www.yuque.com" class="link-item" target="_blank">
+                        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAC+0lEQVQ4jV3TT2sdZRzF8XOeZ2ZyZ27S2KQmtU0qrUpXZqMgJIiYhe+gi267KW5U3GXXneCqFSQI0o0LQd2ICi3U+Kc2qFgQN7ooiub2kjS2yc3c3Dszzzy/46LVhS/gszrfQwCQRJICgJHCikEXWtlqiM0CAKQ+6yV0Gw68WjC99X8DANjSVl4pXC5V10O12m1L7YSB7YR9242lhmpVqq4rhctb2sr/g5JcX/2itOqaJN0Lg7jXHoYyVvGgraxsKxvGJj4Iw7Dd7EdJKq261le/kOQIAINYXTniJl7bDoO66zvpp/e+5e3yN0z6LjLnMZNOY3l6Cac68xpbE05mRydKG78z7YvXOdDoBZq72SgwWnQpU27u/4K3//gAnp4kISd10wJvLpzH0uTTGqOxKZeLzr/ozHjRuyQ1iwDAkdVY7MzjeDrLjIkK19EUCrZti3d7H+Pm/s+kAdExDRYuOgCrldUC6BpFpC7Bbr3H+82+YGKIgUGtFMWcHcylR1FZ40ZxLCNeTlqFEzIgSgSJUQz4sHdDVRNYJB50Bois2ehUNo/Hkkk01pItAa+TDiAAwWDImOGT/mf4O/yOhTxDxgAzIJrBy+GvageVNSCBKINJcAmTvnMOuc/19YMbuFPdxmIxxSKJmk1bHPEBEaZUnr1qG3dGPaT0onfw3t91hrgx4yf548F3tnnwJXJfIEAyIyOpbmJKYTRI0SLuVrsQYFma0aSvXF533/9p9H34Zvg5Oj4XIAACHQSRAOgp6VG0gsnRwYIFmnvPFQU3vzj8aH16diqRIYAQQUACKAlQaw+xg9fxbCbMTBxLAK0vZtM/OFyCY3u4Vh/G691jxYQMgBBByhNozSGaV9kO22eKBaw88fzEQTu4fj9t1i79mzIAnN
